@@ -4,6 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tugas Bersama — JARA</title>
+  <!-- Auth guard -->
+  <script src="../shared/mockData.js"></script>
+  <script src="../shared/auth.js"></script>
+  <script>window.JaraMockData.initMockData(); if(!window.JaraAuth.requireAuth()) document.documentElement.style.visibility='hidden';</script>
   <meta name="description" content="Lihat dan kerjakan tugas bersama tim dalam list/project JARA.">
   <link rel="stylesheet" href="../shared/style.css">
   <link rel="stylesheet" href="tasks.css">
@@ -42,6 +46,7 @@
       <a href="../collaboration/index.html" class="btn btn--secondary btn--sm">👥 Kolaborasi</a>
       <a href="../progress/index.html"      class="btn btn--secondary btn--sm">📊 Progress</a>
       <a href="../admin/index.html"         class="btn btn--secondary btn--sm">⚙️ Admin</a>
+      <button onclick="window.JaraAuth.logout()" class="btn btn--ghost btn--sm" style="color:#ef4444;border-color:rgba(239,68,68,0.3);">🚪 Keluar</button>
     </div>
   </header>
 
@@ -109,8 +114,6 @@
   <div class="toast-container" id="toast-container"></div>
 
   <!-- ── Scripts ───────────────────────────────────────────── -->
-  <script src="../shared/mockData.js"></script>
-  <script src="../shared/auth.js"></script>
   <script src="tasks.js"></script>
 
 </body>

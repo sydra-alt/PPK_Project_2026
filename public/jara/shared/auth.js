@@ -10,6 +10,11 @@
 
 const AUTH_KEY = 'jara_current_user';
 
+// ─── Login Path ────────────────────────────────────────────────────────────────
+// Path relatif ke halaman login dari folder manapun di dalam /jara/
+// Disesuaikan saat integrasi backend.
+const LOGIN_PATH = '../login/index.html';
+
 // ─── Current User ─────────────────────────────────────────────────────────────
 
 /**
@@ -19,12 +24,11 @@ const AUTH_KEY = 'jara_current_user';
 function getCurrentUser() {
   const userId = localStorage.getItem(AUTH_KEY);
   if (!userId) return null;
-  // Bergantung pada JaraMockData yang sudah di-load
   return window.JaraMockData ? window.JaraMockData.getUserById(userId) : null;
 }
 
 /**
- * Set current user (simulasi login).
+ * Set current user (simulasi login / user switcher).
  * @param {string} userId
  */
 function setCurrentUser(userId) {
@@ -32,21 +36,48 @@ function setCurrentUser(userId) {
 }
 
 /**
- * Hapus current user (simulasi logout).
+ * Logout: hapus sesi dan redirect ke halaman login.
  */
-function logoutCurrentUser() {
+function logout() {
   localStorage.removeItem(AUTH_KEY);
+  window.location.href = LOGIN_PATH;
 }
 
 /**
- * Pastikan ada current user, jika tidak set ke user pertama yang tersedia.
- * Fungsi ini dipanggil di awal tiap halaman sebagai fallback.
+ * Alias untuk backward-compatibility.
+ */
+function logoutCurrentUser() {
+  logout();
+}
+
+/**
+ * Guard: jika belum login, redirect ke login page dengan returnTo parameter.
+ * Panggil di awal setiap halaman yang membutuhkan autentikasi.
+ * @returns {boolean} true jika sudah login, false (dan redirect) jika belum
+ */
+function requireAuth() {
+  // Pastikan mock data ada
+  if (window.JaraMockData) window.JaraMockData.initMockData();
+
+  const userId = localStorage.getItem(AUTH_KEY);
+  const user   = userId && window.JaraMockData ? window.JaraMockData.getUserById(userId) : null;
+
+  if (!user) {
+    const returnTo = encodeURIComponent(window.location.href);
+    window.location.href = `${LOGIN_PATH}?returnTo=${returnTo}`;
+    return false;
+  }
+  return true;
+}
+
+/**
+ * Pastikan ada current user (fallback tanpa redirect).
+ * Hanya digunakan di halaman yang tidak butuh strict auth.
  */
 function ensureCurrentUser() {
   const existing = localStorage.getItem(AUTH_KEY);
   if (existing && window.JaraMockData?.getUserById(existing)) return;
 
-  // Fallback: set ke user pertama (non-admin) yang tersedia
   const users = window.JaraMockData?.getAllUsers() || [];
   const defaultUser = users.find(u => u.role === 'user') || users[0];
   if (defaultUser) {
@@ -56,51 +87,32 @@ function ensureCurrentUser() {
 
 // ─── Role Checks ─────────────────────────────────────────────────────────────
 
-/**
- * Cek apakah current user adalah admin.
- * @returns {boolean}
- */
+/** Cek apakah current user adalah admin. */
 function isAdmin() {
   const user = getCurrentUser();
   return user?.role === 'admin';
 }
 
-/**
- * Cek apakah current user adalah owner dari sebuah list.
- * @param {string} listId
- * @returns {boolean}
- */
+/** Cek apakah current user adalah owner dari sebuah list. */
 function isOwner(listId) {
   const user = getCurrentUser();
   const list = window.JaraMockData?.getListById(listId);
   return user && list ? list.ownerId === user.id : false;
 }
 
-/**
- * Cek apakah current user adalah kolaborator di sebuah list.
- * @param {string} listId
- * @returns {boolean}
- */
+/** Cek apakah current user adalah kolaborator di sebuah list. */
 function isCollaboratorOfList(listId) {
   const user = getCurrentUser();
   if (!user) return false;
   return window.JaraMockData?.isCollaborator(listId, user.id) || false;
 }
 
-/**
- * Cek apakah current user punya akses ke sebuah list (owner atau kolaborator).
- * @param {string} listId
- * @returns {boolean}
- */
+/** Cek apakah current user punya akses ke sebuah list. */
 function hasAccessToList(listId) {
   return isOwner(listId) || isCollaboratorOfList(listId);
 }
 
-/**
- * Ambil role user di sebuah list: 'owner', 'collaborator', atau null (no access).
- * @param {string} listId
- * @returns {'owner'|'collaborator'|null}
- */
+/** Ambil role user di sebuah list: 'owner', 'collaborator', atau null. */
 function getRoleInList(listId) {
   if (isOwner(listId)) return 'owner';
   if (isCollaboratorOfList(listId)) return 'collaborator';
@@ -111,7 +123,9 @@ function getRoleInList(listId) {
 window.JaraAuth = {
   getCurrentUser,
   setCurrentUser,
+  logout,
   logoutCurrentUser,
+  requireAuth,
   ensureCurrentUser,
   isAdmin,
   isOwner,

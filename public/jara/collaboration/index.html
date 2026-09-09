@@ -4,6 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kelola Kolaborator — JARA</title>
+  <!-- Auth guard: cek login sebelum halaman dirender -->
+  <script src="../shared/mockData.js"></script>
+  <script src="../shared/auth.js"></script>
+  <script>window.JaraMockData.initMockData(); if(!window.JaraAuth.requireAuth()) document.documentElement.style.visibility='hidden';</script>
   <meta name="description" content="Tambahkan dan kelola kolaborator dalam list/project JARA Anda.">
   <link rel="stylesheet" href="../shared/style.css">
   <link rel="stylesheet" href="collaboration.css">
@@ -21,6 +25,7 @@
       <a href="../tasks/index.html" class="btn btn--secondary btn--sm">📋 Tasks</a>
       <a href="../progress/index.html" class="btn btn--secondary btn--sm">📊 Progress</a>
       <a href="../admin/index.html" class="btn btn--secondary btn--sm">⚙️ Admin</a>
+      <button onclick="window.JaraAuth.logout()" class="btn btn--ghost btn--sm" style="color:#ef4444;border-color:rgba(239,68,68,0.3);">🚪 Keluar</button>
     </div>
   </header>
 
@@ -171,6 +176,7 @@
   <script src="../shared/mockData.js"></script>
   <script src="../shared/auth.js"></script>
   <script src="collaboration.js"></script>
+  <script>window.JaraAuth.requireAuth();</script>
 
   <!-- Inline: update current user badge setelah script load -->
   <script>

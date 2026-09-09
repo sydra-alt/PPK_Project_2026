@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Masuk — JARA Todo List</title>
+  <meta name="description" content="Masuk ke JARA, aplikasi todo list kolaboratif untuk individu dan tim.">
+  <link rel="stylesheet" href="login.css">
+</head>
+<body>
+
+  <!-- Background Blobs -->
+  <div class="bg-blob bg-blob--1"></div>
+  <div class="bg-blob bg-blob--2"></div>
+  <div class="bg-blob bg-blob--3"></div>
+
+  <div class="page-wrapper">
+
+    <!-- ── Hero Panel (kiri, hanya desktop) ─────────────── -->
+    <div class="hero-panel">
+      <div class="hero-panel__brand">
+        <div class="hero-panel__logo">✅</div>
+        <div class="hero-panel__brand-name">JARA</div>
+      </div>
+
+      <h1 class="hero-panel__title">
+        Kelola tugasmu,<br>
+        <span>capai lebih banyak</span><br>
+        bersama tim.
+      </h1>
+
+      <p class="hero-panel__desc">
+        JARA membantu kamu dan tim mengorganisir pekerjaan, berkolaborasi secara real-time,
+        dan memantau progres dengan mudah.
+      </p>
+
+      <div class="feature-list">
+        <div class="feature-item">
+          <div class="feature-item__icon">📋</div>
+          Buat dan kelola list tugas dengan mudah
+        </div>
+        <div class="feature-item">
+          <div class="feature-item__icon">👥</div>
+          Ajak anggota tim untuk berkolaborasi
+        </div>
+        <div class="feature-item">
+          <div class="feature-item__icon">📊</div>
+          Pantau progres tim secara real-time
+        </div>
+        <div class="feature-item">
+          <div class="feature-item__icon">⚡</div>
+          Notifikasi dan update status instan
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Auth Panel (kanan) ────────────────────────────── -->
+    <div class="auth-panel">
+
+      <!-- Mobile brand -->
+      <div class="auth-panel__mobile-brand">
+        <div class="hero-panel__logo" style="width:36px;height:36px;font-size:1.1rem;">✅</div>
+        <div class="hero-panel__brand-name" style="font-size:1.25rem;">JARA</div>
+      </div>
+
+      <div class="auth-panel__header">
+        <h2 class="auth-panel__title">Selamat datang kembali 👋</h2>
+        <p class="auth-panel__subtitle">Masuk ke akun JARA kamu untuk melanjutkan.</p>
+      </div>
+
+      <!-- Error Message -->
+      <div class="error-message" id="error-message" role="alert">
+        <span>❌</span>
+        <span class="error-text"></span>
+      </div>
+
+      <!-- Login Form -->
+      <form class="auth-form" id="login-form" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="username">Username atau Email</label>
+          <div class="form-input-wrapper">
+            <span class="form-input-icon">👤</span>
+            <input
+              type="text"
+              id="username"
+              class="form-input"
+              placeholder="Masukkan username atau email"
+              autocomplete="username"
+              required
+              autofocus
+            >
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="password">Password</label>
+          <div class="form-input-wrapper">
+            <span class="form-input-icon">🔒</span>
+            <input
+              type="password"
+              id="password"
+              class="form-input"
+              placeholder="Masukkan password"
+              autocomplete="current-password"
+              required
+            >
+            <button
+              type="button"
+              class="password-toggle"
+              onclick="togglePassword('password', this)"
+              aria-label="Tampilkan/sembunyikan password"
+            >👁️</button>
+          </div>
+          <p class="password-hint">
+            💡 Untuk demo, gunakan password: <strong>123456</strong>
+          </p>
+        </div>
+
+        <button type="submit" class="btn-submit" id="btn-submit">
+          <span class="btn-text">Masuk ke JARA →</span>
+        </button>
+      </form>
+
+      <!-- Quick Login -->
+      <div class="divider">atau pilih akun demo</div>
+
+      <div>
+        <p class="quick-login-label">Login cepat sebagai</p>
+        <div class="quick-login-grid" id="quick-login-grid">
+          <!-- Diisi oleh login.js -->
+        </div>
+      </div>
+
+      <!-- Footer: Register -->
+      <div class="auth-footer">
+        Belum punya akun?
+        <a href="register.html">Daftar sekarang</a>
+      </div>
+    </div>
+    <!-- end auth-panel -->
+
+  </div>
+
+  <!-- Success Toast -->
+  <div class="toast-success" id="toast-success">
+    <span class="toast-success__icon">🎉</span>
+    <span class="toast-text"></span>
+  </div>
+
+  <script src="../shared/mockData.js"></script>
+  <script src="../shared/auth.js"></script>
+  <script src="login.js"></script>
+
+</body>
+</html>
