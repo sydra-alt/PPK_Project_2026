@@ -21,5 +21,8 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
+
+        // Task Management seeder (Programmer 2)
+        $this->call(TaskSeeder::class);
     }
 }
