@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Progress Dashboard — JARA</title>
+  <meta name="description" content="Pantau progres penyelesaian tugas dalam list/project JARA.">
+  <link rel="stylesheet" href="../shared/style.css">
+  <link rel="stylesheet" href="progress.css">
+</head>
+<body>
+
+  <!-- ── Page Header ───────────────────────────────────────── -->
+  <header class="page-header">
+    <div>
+      <div class="page-header__brand">✅ JARA</div>
+      <div class="page-header__subtitle">Progress Dashboard</div>
+    </div>
+    <div class="flex items-center gap-3">
+      <span class="badge" id="current-user-badge">—</span>
+      <a href="../collaboration/index.html" class="btn btn--secondary btn--sm">👥 Kolaborasi</a>
+      <a href="../tasks/index.html"         class="btn btn--secondary btn--sm">📋 Tasks</a>
+      <a href="../admin/index.html"         class="btn btn--secondary btn--sm">⚙️ Admin</a>
+    </div>
+  </header>
+
+  <!-- ── Main Content ──────────────────────────────────────── -->
+  <main class="page-main">
+
+    <h1 style="font-size: var(--font-size-2xl); font-weight: 700; margin-bottom: var(--space-6);">
+      📊 Progress List / Project
+    </h1>
+
+    <!-- List Selector -->
+    <div class="progress-list-selector">
+      <label for="list-select">📁 Lihat progress untuk:</label>
+      <select id="list-select" class="form-select" style="max-width: 360px;">
+        <option>Memuat...</option>
+      </select>
+    </div>
+
+    <!-- ── Hero: Progress Besar ──────────────────────────── -->
+    <div class="progress-hero">
+
+      <!-- Circular Progress SVG -->
+      <div class="progress-circle-wrapper">
+        <div class="progress-circle">
+          <svg viewBox="0 0 120 120">
+            <defs>
+              <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" style="stop-color: #7c3aed" />
+                <stop offset="100%" style="stop-color: #06b6d4" />
+              </linearGradient>
+            </defs>
+            <circle class="progress-circle__bg" cx="60" cy="60" r="54"/>
+            <circle
+              class="progress-circle__fill"
+              cx="60" cy="60" r="54"
+              id="circle-progress-fill"
+            />
+          </svg>
+          <div class="progress-circle__text">
+            <div class="progress-circle__pct" id="circle-pct">0%</div>
+            <div class="progress-circle__label">Selesai</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Info & Stats -->
+      <div class="progress-hero__info">
+        <div class="progress-hero__list-name" id="hero-list-name">—</div>
+        <div class="progress-hero__desc" id="hero-list-desc">—</div>
+
+        <!-- Progress Bar Horizontal -->
+        <div class="progress-bar-wrapper">
+          <div class="progress-bar" style="height: 12px;">
+            <div
+              class="progress-bar__fill"
+              id="main-progress-fill"
+              style="width: 0%; height: 12px;"
+            ></div>
+          </div>
+          <div class="progress-bar-fraction" id="progress-fraction">0 / 0 task selesai</div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="progress-stats-grid" id="progress-stats">
+          <!-- Diisi oleh progress.js -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── Detail: Dua Kolom ─────────────────────────────── -->
+    <div class="progress-detail-grid">
+
+      <!-- Kolom 1: Breakdown per Kolaborator -->
+      <div class="card">
+        <div class="card__header">
+          <div>
+            <div class="card__title">👥 Progress per Anggota</div>
+            <div class="card__subtitle">Jumlah task yang diselesaikan tiap anggota</div>
+          </div>
+        </div>
+        <div id="collab-breakdown">
+          <!-- Diisi oleh progress.js -->
+          <div class="empty-state">
+            <div class="empty-state__icon">⏳</div>
+            <div class="empty-state__title">Memuat...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Kolom 2: Breakdown per Status -->
+      <div class="card">
+        <div class="card__header">
+          <div>
+            <div class="card__title">📋 Distribusi Status Task</div>
+            <div class="card__subtitle">Perbandingan task berdasarkan status</div>
+          </div>
+        </div>
+        <div id="status-breakdown" style="padding-top: var(--space-2);">
+          <!-- Diisi oleh progress.js -->
+          <div class="empty-state">
+            <div class="empty-state__icon">⏳</div>
+            <div class="empty-state__title">Memuat...</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <!-- end detail grid -->
+
+    <!-- Info note -->
+    <div style="margin-top: var(--space-6); font-size: var(--font-size-sm); color: var(--color-text-faint); text-align: center;">
+      💡 Progress diperbarui otomatis setiap kali kamu kembali ke tab ini.
+      Ubah status task di halaman <a href="../tasks/index.html" style="color: var(--color-primary);">Tasks</a> untuk melihat perubahan.
+    </div>
+
+  </main>
+
+  <!-- ── Dev: User Switcher ─────────────────────────────────── -->
+  <div class="user-switcher" id="user-switcher"></div>
+
+  <!-- ── Toast Container ────────────────────────────────────── -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- ── Scripts ───────────────────────────────────────────── -->
+  <script src="../shared/mockData.js"></script>
+  <script src="../shared/auth.js"></script>
+  <script src="progress.js"></script>
+
+</body>
+</html>

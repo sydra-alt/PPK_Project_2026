@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel — JARA</title>
+  <meta name="description" content="Panel administrasi untuk mengelola akun pengguna JARA.">
+  <link rel="stylesheet" href="../shared/style.css">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+  <!-- ── Page Header ───────────────────────────────────────── -->
+  <header class="page-header">
+    <div style="display: flex; align-items: center; gap: var(--space-4);">
+      <div>
+        <div class="page-header__brand">✅ JARA</div>
+        <div class="page-header__subtitle">Admin Panel</div>
+      </div>
+      <!-- Admin mode indicator -->
+      <div class="admin-mode-banner" id="admin-mode-banner">
+        ⚙️ Mode Administrator
+      </div>
+    </div>
+    <div class="flex items-center gap-3">
+      <span class="badge" id="current-user-badge">—</span>
+      <a href="../collaboration/index.html" class="btn btn--secondary btn--sm">👥 Kolaborasi</a>
+      <a href="../tasks/index.html"         class="btn btn--secondary btn--sm">📋 Tasks</a>
+      <a href="../progress/index.html"      class="btn btn--secondary btn--sm">📊 Progress</a>
+    </div>
+  </header>
+
+  <!-- ── Access Denied Page (tersembunyi secara default) ────── -->
+  <div id="access-denied-page" class="access-denied-page hidden">
+    <div class="access-denied-page__shield">🛡️</div>
+    <div class="access-denied-page__title">Akses Ditolak</div>
+    <div class="access-denied-page__desc">
+      Maaf, <strong id="denied-username">pengguna ini</strong> tidak memiliki hak akses
+      untuk membuka halaman Admin Panel.
+    </div>
+    <div class="access-denied-page__hint">
+      💡 Gunakan <strong>User Switcher</strong> di pojok kiri bawah untuk login sebagai
+      <strong>admin_jara</strong> dan mencoba fitur ini.
+    </div>
+    <div style="display: flex; gap: var(--space-3);">
+      <a href="../tasks/index.html" class="btn btn--primary">📋 Kembali ke Tasks</a>
+      <a href="../progress/index.html" class="btn btn--secondary">📊 Lihat Progress</a>
+    </div>
+  </div>
+
+  <!-- ── Admin Main Content ─────────────────────────────────── -->
+  <main class="page-main" id="admin-content">
+
+    <h1 style="font-size: var(--font-size-2xl); font-weight: 700; margin-bottom: var(--space-6);">
+      ⚙️ Manajemen Akun Pengguna
+    </h1>
+
+    <!-- Stats Bar -->
+    <div class="admin-stats-bar" id="admin-stats-bar">
+      <!-- Diisi oleh admin.js -->
+    </div>
+
+    <!-- Two-column Layout -->
+    <div class="admin-layout">
+
+      <!-- LEFT: User Table -->
+      <div class="card" style="padding: 0; overflow: hidden;">
+        <!-- Table Header / Search Bar -->
+        <div style="padding: var(--space-5) var(--space-5) var(--space-4);">
+          <div class="card__title" style="margin-bottom: var(--space-4);">
+            📋 Daftar Pengguna
+          </div>
+          <div class="admin-search-bar">
+            <div class="admin-search-wrapper">
+              <span class="search-icon-prefix">🔍</span>
+              <input
+                type="search"
+                id="admin-search"
+                class="form-input"
+                placeholder="Cari username atau email..."
+                aria-label="Cari pengguna"
+                style="padding-left: 2.5rem;"
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-wrapper" style="border: none; border-radius: 0; border-top: 1px solid var(--color-border-light);">
+          <table class="table">
+            <thead>
+              <tr>
+                <th style="width: 48px;">#</th>
+                <th>Pengguna</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Bergabung</th>
+                <th style="width: 100px;">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="user-table-body">
+              <!-- Diisi oleh admin.js -->
+              <tr class="table-empty-row">
+                <td colspan="6">⏳ Memuat data...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Dev: Reset Data Button -->
+        <div style="padding: var(--space-4) var(--space-5); border-top: 1px solid var(--color-border-light); display: flex; justify-content: flex-end;">
+          <button id="btn-reset-data" class="btn btn--ghost btn--sm" style="color: var(--color-text-faint);">
+            🔄 Reset Data ke Awal
+          </button>
+        </div>
+      </div>
+
+      <!-- RIGHT: Add User Panel -->
+      <div class="add-user-panel">
+        <div class="card">
+          <div class="card__header">
+            <div>
+              <div class="card__title">➕ Tambah Pengguna Baru</div>
+              <div class="card__subtitle">Buat akun baru di sistem JARA</div>
+            </div>
+          </div>
+
+          <form id="add-user-form" novalidate>
+            <div class="form-group">
+              <label class="form-label" for="new-username">
+                Username <span>*</span>
+              </label>
+              <input
+                type="text"
+                id="new-username"
+                class="form-input"
+                placeholder="cth: budi_santoso"
+                autocomplete="off"
+                required
+              >
+            </div>
+
+            <div class="form-group mt-4">
+              <label class="form-label" for="new-email">
+                Email <span>*</span>
+              </label>
+              <input
+                type="email"
+                id="new-email"
+                class="form-input"
+                placeholder="cth: budi@email.com"
+                autocomplete="off"
+                required
+              >
+            </div>
+
+            <div class="form-group mt-4">
+              <label class="form-label" for="new-role">Role</label>
+              <select id="new-role" class="form-select">
+                <option value="user">🙋 User (Biasa)</option>
+                <option value="admin">⚙️ Admin</option>
+              </select>
+            </div>
+
+            <button type="submit" class="btn btn--primary w-full mt-6">
+              ➕ Tambah Pengguna
+            </button>
+          </form>
+
+          <div class="divider"></div>
+
+          <!-- Panduan Role -->
+          <div>
+            <div class="form-section-title">Perbedaan Role</div>
+            <div style="font-size: var(--font-size-xs); color: var(--color-text-muted); line-height: 1.9;">
+              <div style="margin-bottom: var(--space-3);">
+                <span class="badge badge--admin">⚙️ Admin</span><br>
+                Dapat mengakses Admin Panel, menambah & menghapus akun pengguna di sistem.
+              </div>
+              <div>
+                <span class="badge badge--user">🙋 User</span><br>
+                Dapat membuat list, menambah task, berkolaborasi, dan memantau progres.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- end right panel -->
+
+    </div>
+    <!-- end admin-layout -->
+
+  </main>
+
+  <!-- ── Modal: Konfirmasi Hapus User ──────────────────────── -->
+  <div class="modal-backdrop" id="delete-confirm-modal" role="dialog" aria-modal="true" aria-labelledby="delete-modal-title">
+    <div class="modal">
+      <div class="modal__header">
+        <h2 class="modal__title" id="delete-modal-title">Hapus Pengguna</h2>
+        <button class="modal__close" data-close-modal="delete-confirm-modal" aria-label="Tutup modal">✕</button>
+      </div>
+
+      <div class="confirm-dialog">
+        <div class="confirm-dialog__icon">⚠️</div>
+        <div class="confirm-dialog__title">Yakin ingin menghapus?</div>
+        <div class="confirm-dialog__message">
+          Akun <strong id="delete-confirm-name"></strong> akan dihapus permanen dari sistem.
+          Pengguna ini tidak bisa login lagi dan akan kehilangan semua akses kolaborasi.
+          <br><br>
+          <strong style="color: var(--color-danger);">Tindakan ini tidak bisa dibatalkan.</strong>
+        </div>
+      </div>
+
+      <div class="modal__footer">
+        <button class="btn btn--secondary" data-close-modal="delete-confirm-modal">Batal</button>
+        <button class="btn btn--danger" id="btn-confirm-delete">🗑️ Ya, Hapus Permanen</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Dev: User Switcher ─────────────────────────────────── -->
+  <div class="user-switcher" id="user-switcher"></div>
+
+  <!-- ── Toast Container ────────────────────────────────────── -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- ── Scripts ───────────────────────────────────────────── -->
+  <script src="../shared/mockData.js"></script>
+  <script src="../shared/auth.js"></script>
+  <script src="admin.js"></script>
+
+</body>
+</html>

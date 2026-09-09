@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tugas Bersama — JARA</title>
+  <meta name="description" content="Lihat dan kerjakan tugas bersama tim dalam list/project JARA.">
+  <link rel="stylesheet" href="../shared/style.css">
+  <link rel="stylesheet" href="tasks.css">
+</head>
+<body>
+
+  <!-- ── Page Header ───────────────────────────────────────── -->
+  <header class="page-header">
+    <div style="display: flex; align-items: center; gap: var(--space-4); flex-wrap: wrap; flex: 1;">
+      <div>
+        <div class="page-header__brand">✅ JARA</div>
+        <div class="page-header__subtitle">Tugas Bersama</div>
+      </div>
+
+      <!-- List Selector di header -->
+      <div style="display: flex; align-items: center; gap: var(--space-2); min-width: 0;">
+        <label for="list-select" style="font-size: var(--font-size-xs); color: var(--color-text-muted); white-space: nowrap;">📁 List:</label>
+        <select id="list-select" class="form-select" style="min-width: 200px; max-width: 280px;">
+          <option>Memuat...</option>
+        </select>
+      </div>
+
+      <!-- Role badge & mini progress -->
+      <span class="badge" id="role-badge">—</span>
+
+      <div class="header-progress">
+        <div class="header-progress__bar">
+          <div class="header-progress__fill" id="header-progress-fill" style="width: 0%"></div>
+        </div>
+        <div class="header-progress__pct" id="header-progress-pct">0%</div>
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: var(--space-3); flex-shrink: 0;">
+      <span class="badge" id="current-user-badge">—</span>
+      <a href="../collaboration/index.html" class="btn btn--secondary btn--sm">👥 Kolaborasi</a>
+      <a href="../progress/index.html"      class="btn btn--secondary btn--sm">📊 Progress</a>
+      <a href="../admin/index.html"         class="btn btn--secondary btn--sm">⚙️ Admin</a>
+    </div>
+  </header>
+
+  <!-- ── Main Content ──────────────────────────────────────── -->
+  <main class="page-main">
+
+    <!-- List Title -->
+    <h1 style="font-size: var(--font-size-2xl); font-weight: 700; margin-bottom: var(--space-6); color: var(--color-text);" id="list-title">
+      Memuat list...
+    </h1>
+
+    <!-- Stats Bar -->
+    <div class="task-stats-bar" id="task-stats-bar">
+      <!-- Diisi oleh tasks.js -->
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+      <span class="filter-bar__label">🔽 Filter:</span>
+
+      <select id="filter-status" aria-label="Filter berdasarkan status">
+        <option value="all">Semua Status</option>
+        <option value="todo">Belum Mulai</option>
+        <option value="in_progress">Dikerjakan</option>
+        <option value="done">Selesai</option>
+      </select>
+
+      <select id="filter-priority" aria-label="Filter berdasarkan prioritas">
+        <option value="all">Semua Prioritas</option>
+        <option value="high">🔴 Tinggi</option>
+        <option value="medium">🟡 Sedang</option>
+        <option value="low">🟢 Rendah</option>
+      </select>
+
+      <select id="filter-assignee" aria-label="Filter berdasarkan anggota">
+        <option value="all">Semua Anggota</option>
+        <!-- Diisi oleh tasks.js -->
+      </select>
+    </div>
+
+    <!-- Task List -->
+    <div class="task-list" id="task-list">
+      <!-- Diisi oleh tasks.js -->
+      <div class="empty-state">
+        <div class="empty-state__icon">⏳</div>
+        <div class="empty-state__title">Memuat task...</div>
+      </div>
+    </div>
+
+    <!-- Info: Hak akses kolaborator -->
+    <div style="margin-top: var(--space-8); background: var(--color-primary-light); border-radius: var(--radius-lg); padding: var(--space-5); font-size: var(--font-size-sm);">
+      <div style="font-weight: 600; color: #a78bfa; margin-bottom: var(--space-2);">📌 Hak Akses</div>
+      <div style="color: var(--color-text-muted); line-height: 1.8;">
+        <strong style="color: var(--color-text);">Owner (👑)</strong> — Dapat melihat semua task, mengubah status, dan mengelola kolaborator.<br>
+        <strong style="color: var(--color-text);">Kolaborator (🤝)</strong> — Dapat melihat dan mengubah status task, namun tidak bisa menghapus list atau mengelola kolaborator.
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ── Dev: User Switcher ─────────────────────────────────── -->
+  <div class="user-switcher" id="user-switcher"></div>
+
+  <!-- ── Toast Container ────────────────────────────────────── -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- ── Scripts ───────────────────────────────────────────── -->
+  <script src="../shared/mockData.js"></script>
+  <script src="../shared/auth.js"></script>
+  <script src="tasks.js"></script>
+
+</body>
+</html>

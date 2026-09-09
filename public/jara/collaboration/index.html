@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kelola Kolaborator — JARA</title>
+  <meta name="description" content="Tambahkan dan kelola kolaborator dalam list/project JARA Anda.">
+  <link rel="stylesheet" href="../shared/style.css">
+  <link rel="stylesheet" href="collaboration.css">
+</head>
+<body>
+
+  <!-- ── Page Header ───────────────────────────────────────── -->
+  <header class="page-header">
+    <div>
+      <div class="page-header__brand">✅ JARA</div>
+      <div class="page-header__subtitle">Collaboration Manager</div>
+    </div>
+    <div class="flex items-center gap-3">
+      <span class="badge badge--owner" id="current-user-badge">— Memuat —</span>
+      <a href="../tasks/index.html" class="btn btn--secondary btn--sm">📋 Tasks</a>
+      <a href="../progress/index.html" class="btn btn--secondary btn--sm">📊 Progress</a>
+      <a href="../admin/index.html" class="btn btn--secondary btn--sm">⚙️ Admin</a>
+    </div>
+  </header>
+
+  <!-- ── Main Content ──────────────────────────────────────── -->
+  <main class="page-main">
+
+    <!-- List Selector -->
+    <div class="list-selector">
+      <label for="list-select">📁 Pilih List / Project:</label>
+      <select id="list-select" class="form-select" style="max-width: 360px;">
+        <option value="">Memuat...</option>
+      </select>
+    </div>
+
+    <!-- List Info Banner -->
+    <div class="list-info-banner" id="list-info-banner">
+      <div class="list-info-banner__icon">📋</div>
+      <div class="list-info-banner__content">
+        <div class="list-info-banner__name" id="banner-list-name">Memilih list...</div>
+        <div class="list-info-banner__meta">
+          <span id="banner-list-desc" class="text-muted text-sm">—</span>
+          <span class="badge badge--owner" id="banner-role-badge">Owner</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Two-column layout -->
+    <div class="collab-layout">
+
+      <!-- LEFT: Collaborator List -->
+      <div class="card">
+        <div class="card__header">
+          <div>
+            <div class="card__title">
+              👥 Kolaborator Aktif
+              <span class="collab-count-badge" id="collab-count">0</span>
+            </div>
+            <div class="card__subtitle">Pengguna yang memiliki akses ke list ini</div>
+          </div>
+        </div>
+        <div class="collab-list" id="collab-list">
+          <!-- Diisi oleh collaboration.js -->
+          <div class="empty-state">
+            <div class="empty-state__icon">⏳</div>
+            <div class="empty-state__title">Memuat...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Add Collaborator Panel -->
+      <div id="add-collab-panel">
+        <div class="card add-collab-panel">
+          <div class="card__header">
+            <div>
+              <div class="card__title">➕ Tambah Kolaborator</div>
+              <div class="card__subtitle">Cari berdasarkan username atau email</div>
+            </div>
+          </div>
+
+          <form id="add-collab-form" novalidate>
+            <div class="form-group">
+              <label class="form-label" for="collab-search-input">
+                Username / Email <span>*</span>
+              </label>
+              <div class="search-wrapper">
+                <span class="search-icon">🔍</span>
+                <input
+                  type="text"
+                  id="collab-search-input"
+                  class="form-input form-input--search"
+                  placeholder="Ketik nama atau email..."
+                  autocomplete="off"
+                  aria-label="Cari pengguna"
+                  aria-autocomplete="list"
+                  aria-controls="search-dropdown"
+                >
+                <!-- Search Dropdown -->
+                <div id="search-dropdown" class="search-dropdown" role="listbox">
+                  <!-- Diisi oleh collaboration.js -->
+                </div>
+              </div>
+              <p class="text-xs text-muted mt-2">
+                💡 Hanya pengguna yang terdaftar di sistem yang bisa ditambahkan.
+              </p>
+            </div>
+
+            <button
+              type="submit"
+              class="btn btn--primary w-full mt-4"
+              id="btn-add-collab"
+            >
+              ➕ Tambahkan Kolaborator
+            </button>
+          </form>
+
+          <!-- Info Box: Aturan Kolaborasi -->
+          <div class="divider"></div>
+          <div style="background: var(--color-primary-light); border-radius: var(--radius-md); padding: var(--space-4);">
+            <div class="text-sm font-semibold" style="color: #a78bfa; margin-bottom: var(--space-2);">📌 Aturan Kolaborasi</div>
+            <ul style="font-size: var(--font-size-xs); color: var(--color-text-muted); line-height: 1.8; padding-left: var(--space-4); list-style: disc;">
+              <li>Kolaborator dapat melihat dan mengerjakan task dalam list ini</li>
+              <li>Kolaborator tidak bisa menghapus list atau mengubah kolaborator lain</li>
+              <li>Hanya pemilik list yang bisa menambah/menghapus kolaborator</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- end right panel -->
+
+    </div>
+    <!-- end collab-layout -->
+
+  </main>
+
+  <!-- ── Modal: Konfirmasi Hapus Kolaborator ────────────────── -->
+  <div class="modal-backdrop" id="remove-confirm-modal" role="dialog" aria-modal="true" aria-labelledby="remove-modal-title">
+    <div class="modal">
+      <div class="modal__header">
+        <h2 class="modal__title" id="remove-modal-title">Hapus Kolaborator</h2>
+        <button class="modal__close" data-close-modal="remove-confirm-modal" aria-label="Tutup modal">✕</button>
+      </div>
+
+      <div class="confirm-dialog">
+        <div class="confirm-dialog__icon">🗑️</div>
+        <div class="confirm-dialog__title">Yakin ingin menghapus?</div>
+        <div class="confirm-dialog__message">
+          <strong id="remove-confirm-name"></strong> akan kehilangan akses ke list ini dan semua task di dalamnya.
+          Tindakan ini tidak bisa dibatalkan.
+        </div>
+      </div>
+
+      <div class="modal__footer">
+        <button class="btn btn--secondary" data-close-modal="remove-confirm-modal">Batal</button>
+        <button class="btn btn--danger" id="btn-confirm-remove">Ya, Hapus</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Dev: User Switcher ─────────────────────────────────── -->
+  <div class="user-switcher" id="user-switcher">
+    <!-- Diisi oleh collaboration.js -->
+  </div>
+
+  <!-- ── Toast Container ────────────────────────────────────── -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- ── Scripts ───────────────────────────────────────────── -->
+  <script src="../shared/mockData.js"></script>
+  <script src="../shared/auth.js"></script>
+  <script src="collaboration.js"></script>
+
+  <!-- Inline: update current user badge setelah script load -->
+  <script>
+    // Update badge current user di header
+    window.addEventListener('DOMContentLoaded', () => {
+      const user = window.JaraAuth?.getCurrentUser();
+      const badge = document.getElementById('current-user-badge');
+      if (badge && user) {
+        badge.textContent = `${user.username} (${user.role})`;
+        badge.className = `badge badge--${user.role}`;
+      }
+    });
+  </script>
+
+</body>
+</html>

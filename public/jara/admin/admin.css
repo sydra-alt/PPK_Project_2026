@@ -1,0 +1,217 @@
+/* ============================================================
+   JARA — Admin Module (SRS-011)
+   Styles untuk halaman Admin Panel (manajemen akun)
+   ============================================================ */
+
+/* ── Admin Layout ────────────────────────────────────────── */
+.admin-layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: var(--space-6);
+  align-items: start;
+}
+
+@media (max-width: 960px) {
+  .admin-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Access Denied Page ───────────────────────────────────── */
+.access-denied-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 80px);
+  text-align: center;
+  gap: var(--space-5);
+  padding: var(--space-8);
+}
+
+.access-denied-page__shield {
+  font-size: 5rem;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-12px); }
+}
+
+.access-denied-page__title {
+  font-size: var(--font-size-3xl);
+  font-weight: 800;
+  background: linear-gradient(135deg, #ef4444, #f97316);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.access-denied-page__desc {
+  font-size: var(--font-size-base);
+  color: var(--color-text-muted);
+  max-width: 400px;
+  line-height: 1.7;
+}
+
+.access-denied-page__hint {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-faint);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4) var(--space-6);
+}
+
+/* ── Admin Stats Bar ─────────────────────────────────────── */
+.admin-stats-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.admin-stat-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  transition: border-color var(--transition-fast);
+}
+
+.admin-stat-card:hover { border-color: var(--color-border); }
+
+.admin-stat-card__icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.admin-stat-card__icon--total   { background: rgba(124, 58, 237, 0.15); }
+.admin-stat-card__icon--admin   { background: rgba(245, 158, 11, 0.15); }
+.admin-stat-card__icon--user    { background: rgba(6, 182, 212, 0.15); }
+
+.admin-stat-card__value {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.admin-stat-card__label {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 2px;
+}
+
+/* ── Search Bar ──────────────────────────────────────────── */
+.admin-search-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.admin-search-bar .search-icon-prefix {
+  position: absolute;
+  left: var(--space-3);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-faint);
+  font-size: 1rem;
+  pointer-events: none;
+}
+
+.admin-search-wrapper {
+  position: relative;
+  flex: 1;
+  min-width: 200px;
+}
+
+/* ── User Table ──────────────────────────────────────────── */
+.user-table-row td:first-child {
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.user-info-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.user-info-cell__details {
+  min-width: 0;
+}
+
+.user-info-cell__name {
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+}
+
+.user-info-cell__email {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Row highlighting untuk current user */
+.user-table-row--current {
+  background: rgba(124, 58, 237, 0.04);
+}
+
+.user-table-row--current td {
+  border-bottom-color: rgba(124, 58, 237, 0.1);
+}
+
+/* ── Add User Form (right panel) ─────────────────────────── */
+.add-user-panel {
+  position: sticky;
+  top: var(--space-6);
+}
+
+.form-section-title {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-faint);
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+/* ── Empty Table ─────────────────────────────────────────── */
+.table-empty-row td {
+  text-align: center;
+  padding: var(--space-10);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+/* ── Admin Badge in header ───────────────────────────────── */
+.admin-mode-banner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--font-size-sm);
+  color: var(--color-warning);
+  font-weight: 500;
+}
