@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Enums\TaskPriority;
 use App\Enums\TaskStatus;
 use App\Models\TaskList;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
 class TaskListProgressController extends Controller
@@ -16,7 +15,7 @@ class TaskListProgressController extends Controller
      */
     public function show(TaskList $list): View
     {
-        Gate::authorize('viewProgress', $list);
+        $this->authorize('viewProgress', $list);
 
         $list->load(['owner', 'members', 'tasks.user']);
 

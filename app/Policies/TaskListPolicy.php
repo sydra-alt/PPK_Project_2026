@@ -5,8 +5,27 @@ namespace App\Policies;
 use App\Models\TaskList;
 use App\Models\User;
 
+/**
+ * TaskListPolicy — otorisasi terpusat untuk aksi pada TaskList.
+ *
+ * Dipakai oleh SRS-001 s/d SRS-011.
+ * Semua pengecekan owner/member/admin dilakukan di sini, bukan di controller,
+ * agar logic tidak terduplikasi.
+ *
+ * Refactored based on Autheticator branch.
+ */
 class TaskListPolicy
 {
+    /**
+     * Izinkan semua user login untuk membuat list baru.
+     * Owner ditetapkan saat store(), bukan di sini.
+     * (Dari branch Autheticator)
+     */
+    public function create(User $user): bool
+    {
+        return true;
+    }
+
     /**
      * Determine whether the user can view the list.
      * Owner, member, or admin can view.

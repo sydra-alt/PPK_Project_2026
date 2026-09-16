@@ -7,7 +7,6 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
 class TaskListMemberController extends Controller
@@ -18,7 +17,7 @@ class TaskListMemberController extends Controller
      */
     public function index(TaskList $list): View
     {
-        Gate::authorize('view', $list);
+        $this->authorize('view', $list);
 
         $list->load(['owner', 'members']);
 
@@ -31,7 +30,7 @@ class TaskListMemberController extends Controller
      */
     public function store(Request $request, TaskList $list): RedirectResponse
     {
-        Gate::authorize('manageMembers', $list);
+        $this->authorize('manageMembers', $list);
 
         $validated = $request->validate([
             'email' => ['required', 'email', 'exists:users,email'],
@@ -65,7 +64,7 @@ class TaskListMemberController extends Controller
      */
     public function destroy(TaskList $list, User $user): RedirectResponse
     {
-        Gate::authorize('manageMembers', $list);
+        $this->authorize('manageMembers', $list);
 
         if ($list->isOwner($user)) {
             return back()->with('error', 'Tidak dapat menghapus pemilik list.');

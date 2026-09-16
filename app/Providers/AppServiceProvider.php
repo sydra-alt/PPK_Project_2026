@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\TaskList;
+use App\Policies\TaskListPolicy;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +22,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Daftarkan policy TaskList agar bisa dipanggil via $this->authorize()
+        // Diambil dari branch Autheticator
+        Gate::policy(TaskList::class, TaskListPolicy::class);
     }
 }
