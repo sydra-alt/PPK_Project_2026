@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\TaskList;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
 class TaskListController extends Controller
@@ -25,6 +24,9 @@ class TaskListController extends Controller
      */
     public function create(): View
     {
+        // Pastikan user punya hak membuat list (via TaskListPolicy::create)
+        $this->authorize('create', TaskList::class);
+
         return view('lists.create');
     }
 
@@ -33,8 +35,11 @@ class TaskListController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        // Otorisasi create sebelum menyentuh database (FR-03.2)
+        $this->authorize('create', TaskList::class);
+
         $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
+            'name'        => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:1000'],
         ]);
 
@@ -49,7 +54,8 @@ class TaskListController extends Controller
      */
     public function edit(TaskList $list): View
     {
-        Gate::authorize('update', $list);
+        // Hanya owner yang boleh mengedit (TaskListPolicy::update)
+        $this->authorize('update', $list);
 
         return view('lists.edit', compact('list'));
     }
@@ -59,10 +65,11 @@ class TaskListController extends Controller
      */
     public function update(Request $request, TaskList $list): RedirectResponse
     {
-        Gate::authorize('update', $list);
+        // Hanya owner yang boleh memperbarui (TaskListPolicy::update)
+        $this->authorize('update', $list);
 
         $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
+            'name'        => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:1000'],
         ]);
 
@@ -77,7 +84,8 @@ class TaskListController extends Controller
      */
     public function destroy(TaskList $list): RedirectResponse
     {
-        Gate::authorize('delete', $list);
+        // Hanya owner yang boleh menghapus (TaskListPolicy::delete) — FR-03.1
+        $this->authorize('delete', $list);
 
         $list->delete();
 
@@ -85,3 +93,4 @@ class TaskListController extends Controller
             ->with('success', 'List berhasil dihapus.');
     }
 }
+
