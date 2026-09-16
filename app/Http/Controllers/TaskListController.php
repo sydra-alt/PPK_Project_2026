@@ -50,7 +50,13 @@ class TaskListController extends Controller
         ]);
 
         $list = DB::transaction(function () use ($request, $validated) {
-            return $request->user()->taskLists()->create($validated);
+            // 1. Buat list baru — owner_id otomatis terisi via relasi taskLists()
+            $list = $request->user()->taskLists()->create($validated);
+
+            // 2. Catat owner di tabel pivot task_list_user dengan role 'owner'
+            $list->members()->attach($request->user()->id, ['role' => 'owner']);
+
+            return $list;
         });
 
         return redirect()->route('lists.index')
