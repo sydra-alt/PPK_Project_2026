@@ -1,93 +1,216 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center justify-between">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('My Lists') }}
-            </h2>
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+                <h2 class="font-bold text-2xl text-gray-800 leading-tight">
+                    {{ __('Daftar Tugas & Proyek') }}
+                </h2>
+                <p class="text-sm text-gray-500 mt-1">
+                    Kelola list tugas pribadi maupun kolaborasi bersama tim Anda.
+                </p>
+            </div>
             <a href="{{ route('lists.create') }}"
-               class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                {{ __('+ New List') }}
+               class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 border border-transparent rounded-lg font-semibold text-sm text-white hover:bg-indigo-700 active:bg-indigo-800 shadow-sm transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                {{ __('+ Buat List Baru') }}
             </a>
         </div>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div class="py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
 
             {{-- Flash message --}}
             @if (session('success'))
-                <div class="mb-4 rounded-md bg-green-50 p-4">
-                    <div class="flex">
-                        <div class="shrink-0">
-                            <svg class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
-                            </svg>
-                        </div>
-                        <div class="ml-3">
-                            <p class="text-sm font-medium text-green-800">{{ session('success') }}</p>
-                        </div>
-                    </div>
+                <div class="rounded-lg bg-green-50 border border-green-200 p-4 flex items-center gap-3">
+                    <span class="text-green-600 text-lg">✅</span>
+                    <p class="text-sm font-medium text-green-800">{{ session('success') }}</p>
                 </div>
             @endif
 
-            @if ($taskLists->isEmpty())
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6 text-center text-gray-500">
-                        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
-                        </svg>
-                        <h3 class="mt-2 text-sm font-semibold text-gray-900">{{ __('No lists yet') }}</h3>
-                        <p class="mt-1 text-sm text-gray-500">{{ __('Get started by creating a new list.') }}</p>
-                        <div class="mt-6">
+            @if (session('error'))
+                <div class="rounded-lg bg-red-50 border border-red-200 p-4 flex items-center gap-3">
+                    <span class="text-red-600 text-lg">❌</span>
+                    <p class="text-sm font-medium text-red-800">{{ session('error') }}</p>
+                </div>
+            @endif
+
+            {{-- SECTION 1: Owned Lists (SRS-002, SRS-003) --}}
+            <section>
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+                        <span>📁</span> {{ __('List Milik Saya') }}
+                        <span class="text-xs bg-indigo-100 text-indigo-700 px-2.5 py-0.5 rounded-full font-semibold">
+                            {{ $ownedLists->count() }}
+                        </span>
+                    </h3>
+                </div>
+
+                @if ($ownedLists->isEmpty())
+                    <div class="bg-white rounded-xl border border-gray-200 p-8 text-center text-gray-500 shadow-sm">
+                        <div class="text-4xl mb-2">📭</div>
+                        <h4 class="text-base font-semibold text-gray-900">{{ __('Belum ada list pribadi') }}</h4>
+                        <p class="text-sm text-gray-500 mt-1">{{ __('Mulai dengan membuat list tugas atau proyek pertama Anda.') }}</p>
+                        <div class="mt-4">
                             <a href="{{ route('lists.create') }}"
-                               class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                                {{ __('+ New List') }}
+                               class="inline-flex items-center px-4 py-2 bg-indigo-600 rounded-lg text-sm font-semibold text-white hover:bg-indigo-700 shadow-sm">
+                                {{ __('+ Buat List Sekarang') }}
                             </a>
                         </div>
                     </div>
-                </div>
-            @else
-                <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                    @foreach ($taskLists as $taskList)
-                        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg hover:shadow-md transition-shadow duration-200">
-                            <div class="p-6">
-                                <div class="flex items-start justify-between">
-                                    <div class="flex-1 min-w-0">
-                                        <h3 class="text-lg font-semibold text-gray-900 truncate">
-                                            {{ $taskList->name }}
-                                        </h3>
-                                        @if ($taskList->description)
-                                            <p class="mt-1 text-sm text-gray-500 line-clamp-2">
-                                                {{ $taskList->description }}
-                                            </p>
-                                        @endif
-                                        <p class="mt-2 text-xs text-gray-400">
-                                            {{ __('Created') }} {{ $taskList->created_at->diffForHumans() }}
+                @else
+                    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                        @foreach ($ownedLists as $list)
+                            @php
+                                $stats = $list->progressStats();
+                            @endphp
+                            <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between">
+                                <div>
+                                    <div class="flex items-start justify-between gap-2">
+                                        <h4 class="text-lg font-bold text-gray-900 truncate">
+                                            {{ $list->name }}
+                                        </h4>
+                                        <span class="px-2 py-0.5 text-xs font-semibold rounded-full bg-emerald-100 text-emerald-800 shrink-0">
+                                            Pemilik
+                                        </span>
+                                    </div>
+
+                                    @if ($list->description)
+                                        <p class="mt-2 text-sm text-gray-600 line-clamp-2">
+                                            {{ $list->description }}
                                         </p>
+                                    @endif
+
+                                    {{-- Mini Progress Bar (SRS-010) --}}
+                                    <div class="mt-4 pt-4 border-t border-gray-100">
+                                        <div class="flex justify-between text-xs text-gray-500 font-medium mb-1">
+                                            <span>Progres Tugas</span>
+                                            <span class="font-bold text-gray-700">{{ $stats['percentage'] }}% ({{ $stats['completed'] }}/{{ $stats['total'] }})</span>
+                                        </div>
+                                        <div class="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
+                                            <div class="bg-indigo-600 h-2 rounded-full transition-all duration-300" style="width: {{ $stats['percentage'] }}%"></div>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div class="mt-4 flex items-center gap-3">
-                                    <a href="{{ route('lists.edit', $taskList) }}"
-                                       class="inline-flex items-center px-3 py-1.5 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                                        {{ __('Edit') }}
-                                    </a>
+                                {{-- Action Links & Buttons --}}
+                                <div class="mt-6 pt-4 border-t border-gray-100 space-y-3">
+                                    <div class="flex items-center gap-2">
+                                        <a href="{{ route('task-lists.tasks.index', $list->id) }}"
+                                           class="flex-1 inline-flex justify-center items-center gap-1.5 px-3 py-2 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 rounded-lg text-xs font-semibold transition">
+                                            <span>📋</span> Buka Tugas
+                                        </a>
+                                        <a href="{{ route('lists.progress', $list) }}"
+                                           class="inline-flex items-center gap-1 px-3 py-2 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-lg text-xs font-semibold transition"
+                                           title="Lihat Progres">
+                                            <span>📊</span> Progres
+                                        </a>
+                                        <a href="{{ route('lists.members.index', $list) }}"
+                                           class="inline-flex items-center gap-1 px-3 py-2 bg-purple-50 text-purple-700 hover:bg-purple-100 rounded-lg text-xs font-semibold transition"
+                                           title="Kelola Kolaborator">
+                                            <span>👥</span> Anggota
+                                        </a>
+                                    </div>
 
-                                    <form method="POST" action="{{ route('lists.destroy', $taskList) }}"
-                                          onsubmit="return confirm('{{ __('Are you sure you want to delete this list?') }}')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit"
-                                                class="inline-flex items-center px-3 py-1.5 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-500 active:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                                            {{ __('Delete') }}
-                                        </button>
-                                    </form>
+                                    <div class="flex items-center justify-end gap-2 pt-1">
+                                        <a href="{{ route('lists.edit', $list) }}"
+                                           class="text-xs text-gray-600 hover:text-gray-900 font-medium px-2 py-1">
+                                            ✏️ Edit
+                                        </a>
+                                        <form method="POST" action="{{ route('lists.destroy', $list) }}"
+                                              onsubmit="return confirm('Hapus list ini beserta seluruh tugas dan keanggotaan di dalamnya secara atomik?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-xs text-red-600 hover:text-red-800 font-medium px-2 py-1">
+                                                🗑️ Hapus
+                                            </button>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    @endforeach
+                        @endforeach
+                    </div>
+                @endif
+            </section>
+
+            {{-- SECTION 2: Shared Lists / Collaboration (SRS-008, SRS-009) --}}
+            <section>
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+                        <span>🤝</span> {{ __('Dibagikan ke Saya (Kolaborasi)') }}
+                        <span class="text-xs bg-purple-100 text-purple-700 px-2.5 py-0.5 rounded-full font-semibold">
+                            {{ $sharedLists->count() }}
+                        </span>
+                    </h3>
                 </div>
-            @endif
+
+                @if ($sharedLists->isEmpty())
+                    <div class="bg-white rounded-xl border border-dashed border-gray-300 p-6 text-center text-gray-500">
+                        <p class="text-sm">{{ __('Belum ada list yang dibagikan oleh pengguna lain kepada Anda.') }}</p>
+                    </div>
+                @else
+                    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                        @foreach ($sharedLists as $list)
+                            @php
+                                $stats = $list->progressStats();
+                            @endphp
+                            <div class="bg-white rounded-xl border border-purple-200 p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between">
+                                <div>
+                                    <div class="flex items-start justify-between gap-2">
+                                        <h4 class="text-lg font-bold text-gray-900 truncate">
+                                            {{ $list->name }}
+                                        </h4>
+                                        <span class="px-2 py-0.5 text-xs font-semibold rounded-full bg-purple-100 text-purple-800 shrink-0">
+                                            Kolaborator
+                                        </span>
+                                    </div>
+
+                                    <p class="text-xs text-gray-400 mt-1">
+                                        Pemilik: <span class="font-medium text-gray-700">{{ $list->owner?->name ?? 'User' }}</span>
+                                    </p>
+
+                                    @if ($list->description)
+                                        <p class="mt-2 text-sm text-gray-600 line-clamp-2">
+                                            {{ $list->description }}
+                                        </p>
+                                    @endif
+
+                                    {{-- Mini Progress Bar --}}
+                                    <div class="mt-4 pt-4 border-t border-gray-100">
+                                        <div class="flex justify-between text-xs text-gray-500 font-medium mb-1">
+                                            <span>Progres Tugas</span>
+                                            <span class="font-bold text-gray-700">{{ $stats['percentage'] }}% ({{ $stats['completed'] }}/{{ $stats['total'] }})</span>
+                                        </div>
+                                        <div class="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
+                                            <div class="bg-purple-600 h-2 rounded-full transition-all duration-300" style="width: {{ $stats['percentage'] }}%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {{-- Action Links --}}
+                                <div class="mt-6 pt-4 border-t border-gray-100 flex items-center gap-2">
+                                    <a href="{{ route('task-lists.tasks.index', $list->id) }}"
+                                       class="flex-1 inline-flex justify-center items-center gap-1.5 px-3 py-2 bg-purple-50 text-purple-700 hover:bg-purple-100 rounded-lg text-xs font-semibold transition">
+                                        <span>📋</span> Buka Tugas
+                                    </a>
+                                    <a href="{{ route('lists.progress', $list) }}"
+                                       class="inline-flex items-center gap-1 px-3 py-2 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-lg text-xs font-semibold transition"
+                                       title="Lihat Progres">
+                                        <span>📊</span> Progres
+                                    </a>
+                                    <a href="{{ route('lists.members.index', $list) }}"
+                                       class="inline-flex items-center gap-1 px-3 py-2 bg-gray-50 text-gray-700 hover:bg-gray-100 rounded-lg text-xs font-semibold transition"
+                                       title="Daftar Anggota">
+                                        <span>👥</span> Anggota
+                                    </a>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
+            </section>
 
         </div>
     </div>

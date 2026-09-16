@@ -300,12 +300,25 @@
     {{-- Page Header --}}
     <div class="page-header">
         <div>
-            <h1>📋 Task List #{{ $taskList }}</h1>
-            <p>Manage your tasks efficiently</p>
+            <div style="margin-bottom: 0.5rem;">
+                <a href="{{ route('lists.index') }}" style="color: var(--accent); font-size: 0.8125rem; text-decoration: none; font-weight: 600;">
+                    ← Kembali ke Daftar List
+                </a>
+            </div>
+            <h1>📋 {{ $taskListModel->name ?? ('Task List #' . $taskList) }}</h1>
+            <p>{{ $taskListModel->description ?? 'Kelola seluruh tugas dalam list/proyek ini' }}</p>
         </div>
-        <a href="{{ route('task-lists.tasks.create', $taskList) }}" class="btn btn-primary" id="btn-add-task">
-            <span>＋</span> Add Task
-        </a>
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;">
+            <a href="{{ route('lists.progress', $taskList) }}" class="btn btn-secondary">
+                <span>📊</span> Progres
+            </a>
+            <a href="{{ route('lists.members.index', $taskList) }}" class="btn btn-secondary">
+                <span>👥</span> Anggota ({{ 1 + ($taskListModel->members->count() ?? 0) }})
+            </a>
+            <a href="{{ route('task-lists.tasks.create', $taskList) }}" class="btn btn-primary" id="btn-add-task">
+                <span>＋</span> Add Task
+            </a>
+        </div>
     </div>
 
     {{-- Stats --}}

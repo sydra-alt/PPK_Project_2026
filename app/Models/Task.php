@@ -46,6 +46,15 @@ class Task extends Model
     // ── Relationships ────────────────────────────────────────────
 
     /**
+     * Get the task list this task belongs to.
+     * SRS-004: Membuat tugas dalam list
+     */
+    public function taskList(): BelongsTo
+    {
+        return $this->belongsTo(TaskList::class, 'task_list_id');
+    }
+
+    /**
      * Get the user who created this task.
      */
     public function user(): BelongsTo

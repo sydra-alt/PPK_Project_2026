@@ -6,16 +6,23 @@ use App\Enums\TaskPriority;
 use App\Enums\TaskStatus;
 use App\Http\Requests\TaskRequest;
 use App\Models\Task;
+use App\Models\TaskList;
+use Illuminate\Support\Facades\Gate;
 
 class TaskController extends Controller
 {
     /**
      * Display a listing of tasks for a given task list.
-     * SRS-004: Membuat tugas (view daftar tugas dalam list/project)
+     * SRS-004: Menampilkan daftar tugas dalam list/project
+     * SRS-009: Mengelola tugas bersama oleh pemilik dan anggota
      */
     public function index(int $taskList)
     {
+        $taskListModel = TaskList::with(['owner', 'members'])->findOrFail($taskList);
+        Gate::authorize('manageTasks', $taskListModel);
+
         $tasks = Task::where('task_list_id', $taskList)
+            ->with('user')
             ->orderByRaw("CASE
                 WHEN priority = 'urgent' THEN 1
                 WHEN priority = 'high' THEN 2
@@ -27,14 +34,9 @@ class TaskController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        $stats = [
-            'total' => $tasks->count(),
-            'completed' => $tasks->where('status', TaskStatus::Completed)->count(),
-            'pending' => $tasks->where('status', TaskStatus::Pending)->count(),
-            'overdue' => $tasks->filter(fn (Task $task) => $task->isOverdue())->count(),
-        ];
+        $stats = $taskListModel->progressStats();
 
-        return view('tasks.index', compact('tasks', 'taskList', 'stats'));
+        return view('tasks.index', compact('tasks', 'taskList', 'taskListModel', 'stats'));
     }
 
     /**
@@ -43,9 +45,12 @@ class TaskController extends Controller
      */
     public function create(int $taskList)
     {
+        $taskListModel = TaskList::findOrFail($taskList);
+        Gate::authorize('manageTasks', $taskListModel);
+
         $priorities = TaskPriority::cases();
 
-        return view('tasks.create', compact('taskList', 'priorities'));
+        return view('tasks.create', compact('taskList', 'taskListModel', 'priorities'));
     }
 
     /**
@@ -53,12 +58,16 @@ class TaskController extends Controller
      * SRS-004: Membuat tugas dan memasukkannya ke dalam list/project
      * SRS-005: Menetapkan prioritas pada suatu tugas
      * SRS-006: Menetapkan deadline/tenggat waktu pada tugas
+     * SRS-009: User yang login otomatis menjadi pembuat tugas
      */
     public function store(TaskRequest $request, int $taskList)
     {
+        $taskListModel = TaskList::findOrFail($taskList);
+        Gate::authorize('manageTasks', $taskListModel);
+
         Task::create([
             'task_list_id' => $taskList,
-            'user_id' => 1, // Sementara hardcoded — diganti auth()->id() saat integrasi
+            'user_id' => $request->user()->id,
             'title' => $request->validated('title'),
             'description' => $request->validated('description'),
             'priority' => $request->validated('priority'),
@@ -72,11 +81,14 @@ class TaskController extends Controller
 
     /**
      * Display the specified task.
-     * SRS-004: Membuat tugas (view detail tugas)
+     * SRS-004: Melihat detail tugas
      */
     public function show(int $taskList, Task $task)
     {
-        return view('tasks.show', compact('taskList', 'task'));
+        $taskListModel = TaskList::findOrFail($taskList);
+        Gate::authorize('manageTasks', $taskListModel);
+
+        return view('tasks.show', compact('taskList', 'taskListModel', 'task'));
     }
 
     /**
@@ -85,9 +97,12 @@ class TaskController extends Controller
      */
     public function edit(int $taskList, Task $task)
     {
+        $taskListModel = TaskList::findOrFail($taskList);
+        Gate::authorize('manageTasks', $taskListModel);
+
         $priorities = TaskPriority::cases();
 
-        return view('tasks.edit', compact('taskList', 'task', 'priorities'));
+        return view('tasks.edit', compact('taskList', 'taskListModel', 'task', 'priorities'));
     }
 
     /**
@@ -96,6 +111,9 @@ class TaskController extends Controller
      */
     public function update(TaskRequest $request, int $taskList, Task $task)
     {
+        $taskListModel = TaskList::findOrFail($taskList);
+        Gate::authorize('manageTasks', $taskListModel);
+
         $task->update($request->validated());
 
         return redirect()
@@ -105,10 +123,13 @@ class TaskController extends Controller
 
     /**
      * Remove the specified task from storage.
-     * SRS-004: Mengelola tugas (hapus)
+     * SRS-004: Hapus tugas
      */
     public function destroy(int $taskList, Task $task)
     {
+        $taskListModel = TaskList::findOrFail($taskList);
+        Gate::authorize('manageTasks', $taskListModel);
+
         $task->delete();
 
         return redirect()
@@ -122,6 +143,9 @@ class TaskController extends Controller
      */
     public function toggleStatus(int $taskList, Task $task)
     {
+        $taskListModel = TaskList::findOrFail($taskList);
+        Gate::authorize('manageTasks', $taskListModel);
+
         $task->toggleStatus();
 
         $message = $task->status === TaskStatus::Completed
