@@ -121,8 +121,8 @@ class TaskListTest extends TestCase
 
         $response->assertRedirect(route('lists.index'));
 
-        // Soft deleted — not in normal query
-        $this->assertSoftDeleted('task_lists', [
+        // Cascade deleted — row removed from database
+        $this->assertDatabaseMissing('task_lists', [
             'id' => $taskList->id,
         ]);
     }
