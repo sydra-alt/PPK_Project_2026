@@ -1,0 +1,284 @@
+/* ============================================================
+   JARA — Progress Module (SRS-010)
+   Styles untuk halaman Progress Dashboard
+   ============================================================ */
+
+/* ── Main Progress Card ──────────────────────────────────── */
+.progress-hero {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.15), rgba(6, 182, 212, 0.08));
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-8);
+  margin-bottom: var(--space-6);
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+@media (max-width: 768px) {
+  .progress-hero {
+    flex-direction: column;
+    gap: var(--space-6);
+    text-align: center;
+  }
+}
+
+/* ── Circular Progress (CSS-only) ────────────────────────── */
+.progress-circle-wrapper {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.progress-circle {
+  width: 140px;
+  height: 140px;
+  position: relative;
+}
+
+.progress-circle svg {
+  transform: rotate(-90deg);
+  width: 100%;
+  height: 100%;
+}
+
+.progress-circle__bg {
+  fill: none;
+  stroke: var(--color-surface-2);
+  stroke-width: 10;
+}
+
+.progress-circle__fill {
+  fill: none;
+  stroke: url(#progressGradient);
+  stroke-width: 10;
+  stroke-linecap: round;
+  stroke-dasharray: 339.29; /* 2 * PI * 54 (r=54) */
+  stroke-dashoffset: 339.29; /* diisi oleh JS */
+  transition: stroke-dashoffset 1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.progress-circle__text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.progress-circle__pct {
+  font-size: var(--font-size-3xl);
+  font-weight: 800;
+  background: linear-gradient(135deg, #a78bfa, #22d3ee);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+}
+
+.progress-circle__label {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* ── Progress Hero Info ──────────────────────────────────── */
+.progress-hero__info {
+  flex: 1;
+  min-width: 0;
+}
+
+.progress-hero__list-name {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: var(--space-2);
+}
+
+.progress-hero__desc {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-5);
+}
+
+.progress-bar-wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+
+.progress-bar-wrapper .progress-bar {
+  flex: 1;
+  height: 12px;
+}
+
+.progress-bar-wrapper .progress-bar__fill {
+  height: 12px;
+}
+
+.progress-bar-fraction {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+/* ── Stats Grid (inside hero) ────────────────────────────── */
+.progress-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+}
+
+@media (max-width: 600px) {
+  .progress-stats-grid { grid-template-columns: 1fr 1fr; }
+}
+
+.progress-stat {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  text-align: center;
+  transition: border-color var(--transition-fast);
+}
+
+.progress-stat:hover { border-color: var(--color-border); }
+
+.progress-stat__value {
+  font-size: var(--font-size-2xl);
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: var(--space-1);
+}
+
+.progress-stat__label {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.progress-stat--done     .progress-stat__value { color: var(--color-success); }
+.progress-stat--progress .progress-stat__value { color: #a78bfa; }
+.progress-stat--todo     .progress-stat__value { color: var(--color-text-muted); }
+
+/* ── Bottom Section: Two-column ──────────────────────────── */
+.progress-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-6);
+}
+
+@media (max-width: 768px) {
+  .progress-detail-grid { grid-template-columns: 1fr; }
+}
+
+/* ── Collaborator Breakdown ───────────────────────────────── */
+.collab-progress-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.collab-progress-item:last-child { border-bottom: none; }
+
+.collab-progress-item__info {
+  flex: 1;
+  min-width: 0;
+}
+
+.collab-progress-item__name {
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--space-1);
+}
+
+.collab-progress-item__bar-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.collab-progress-item__bar {
+  flex: 1;
+  height: 6px;
+  background: var(--color-surface-2);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.collab-progress-item__bar-fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+  transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.collab-progress-item__stats {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+/* ── Status Breakdown (visual bars) ──────────────────────── */
+.status-breakdown-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.status-breakdown-item:last-child { margin-bottom: 0; }
+
+.status-breakdown-item__label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  width: 110px;
+  flex-shrink: 0;
+}
+
+.status-breakdown-item__bar {
+  flex: 1;
+  height: 10px;
+  background: var(--color-surface-2);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.status-breakdown-item__fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.status-breakdown-item__count {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  width: 40px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* ── List Selector ───────────────────────────────────────── */
+.progress-list-selector {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+
+.progress-list-selector label {
+  font-weight: 500;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  white-space: nowrap;
+}

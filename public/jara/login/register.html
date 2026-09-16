@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daftar Akun — JARA Todo List</title>
+  <meta name="description" content="Buat akun JARA baru dan mulai kelola tugasmu bersama tim.">
+  <link rel="stylesheet" href="login.css">
+</head>
+<body>
+
+  <!-- Background Blobs -->
+  <div class="bg-blob bg-blob--1"></div>
+  <div class="bg-blob bg-blob--2"></div>
+  <div class="bg-blob bg-blob--3"></div>
+
+  <div class="page-wrapper">
+
+    <!-- ── Hero Panel (kiri) ─────────────────────────────── -->
+    <div class="hero-panel">
+      <div class="hero-panel__brand">
+        <div class="hero-panel__logo">✅</div>
+        <div class="hero-panel__brand-name">JARA</div>
+      </div>
+
+      <h1 class="hero-panel__title">
+        Mulai perjalananmu<br>
+        <span>bersama JARA</span><br>
+        hari ini.
+      </h1>
+
+      <p class="hero-panel__desc">
+        Bergabunglah dengan ribuan pengguna yang sudah menggunakan JARA untuk
+        mengatur tugas dan berkolaborasi dengan tim mereka.
+      </p>
+
+      <div class="feature-list">
+        <div class="feature-item">
+          <div class="feature-item__icon">🆓</div>
+          Gratis untuk digunakan, tanpa batas
+        </div>
+        <div class="feature-item">
+          <div class="feature-item__icon">🔒</div>
+          Data aman dan terlindungi
+        </div>
+        <div class="feature-item">
+          <div class="feature-item__icon">🚀</div>
+          Langsung bisa dipakai tanpa konfigurasi
+        </div>
+        <div class="feature-item">
+          <div class="feature-item__icon">🤝</div>
+          Kolaborasi tanpa batas anggota tim
+        </div>
+      </div>
+
+      <!-- Testimonial card -->
+      <div style="margin-top: 2.5rem; background: white; border-radius: 16px; padding: 1.25rem 1.5rem; box-shadow: 0 4px 20px rgba(109, 40, 217, 0.08); max-width: 380px;">
+        <div style="font-size: 0.9rem; color: #374151; line-height: 1.7; margin-bottom: 1rem; font-style: italic;">
+          "JARA membuat koordinasi tim kami jauh lebih mudah. Progres setiap tugas bisa dipantau secara real-time!"
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#06b6d4);display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;color:white;">BS</div>
+          <div>
+            <div style="font-size:0.85rem;font-weight:600;color:#1f2937;">Budi Santoso</div>
+            <div style="font-size:0.75rem;color:#9ca3af;">Project Manager, Tim Dev</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Auth Panel (kanan) ────────────────────────────── -->
+    <div class="auth-panel">
+
+      <!-- Mobile brand -->
+      <div class="auth-panel__mobile-brand">
+        <div class="hero-panel__logo" style="width:36px;height:36px;font-size:1.1rem;">✅</div>
+        <div class="hero-panel__brand-name" style="font-size:1.25rem;">JARA</div>
+      </div>
+
+      <div class="auth-panel__header">
+        <h2 class="auth-panel__title">Buat akun baru ✨</h2>
+        <p class="auth-panel__subtitle">Isi data di bawah untuk mulai menggunakan JARA.</p>
+      </div>
+
+      <!-- Error Message -->
+      <div class="error-message" id="error-message" role="alert">
+        <span>❌</span>
+        <span class="error-text"></span>
+      </div>
+
+      <!-- Register Form -->
+      <form class="auth-form" id="register-form" novalidate>
+
+        <div class="form-group">
+          <label class="form-label" for="reg-username">Username <span style="color:#ef4444">*</span></label>
+          <div class="form-input-wrapper">
+            <span class="form-input-icon">👤</span>
+            <input
+              type="text"
+              id="reg-username"
+              class="form-input"
+              placeholder="cth: budi_santoso (min. 3 karakter)"
+              autocomplete="username"
+              required
+              autofocus
+              minlength="3"
+            >
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="reg-email">Email <span style="color:#ef4444">*</span></label>
+          <div class="form-input-wrapper">
+            <span class="form-input-icon">✉️</span>
+            <input
+              type="email"
+              id="reg-email"
+              class="form-input"
+              placeholder="cth: budi@email.com"
+              autocomplete="email"
+              required
+            >
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.875rem;">
+          <div class="form-group">
+            <label class="form-label" for="reg-password">Password <span style="color:#ef4444">*</span></label>
+            <div class="form-input-wrapper">
+              <span class="form-input-icon">🔒</span>
+              <input
+                type="password"
+                id="reg-password"
+                class="form-input"
+                placeholder="Min. 6 karakter"
+                autocomplete="new-password"
+                required
+                minlength="6"
+              >
+              <button
+                type="button"
+                class="password-toggle"
+                onclick="togglePassword('reg-password', this)"
+                aria-label="Tampilkan password"
+              >👁️</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="reg-password2">Konfirmasi <span style="color:#ef4444">*</span></label>
+            <div class="form-input-wrapper">
+              <span class="form-input-icon">🔑</span>
+              <input
+                type="password"
+                id="reg-password2"
+                class="form-input"
+                placeholder="Ulangi password"
+                autocomplete="new-password"
+                required
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="reg-role">Role Akun</label>
+          <div class="form-input-wrapper">
+            <span class="form-input-icon">🏷️</span>
+            <select id="reg-role" class="form-select">
+              <option value="user">🙋 User Biasa</option>
+              <option value="admin">⚙️ Admin</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="font-size: 0.78rem; color: #9ca3af; background: #f9f8ff; border-radius: 10px; padding: 0.75rem 1rem; line-height: 1.7;">
+          💡 <strong>Catatan demo:</strong> Semua akun bisa login menggunakan password
+          <strong style="color: #7c3aed;">123456</strong>, termasuk akun yang kamu buat sekarang.
+        </div>
+
+        <button type="submit" class="btn-submit" id="btn-submit">
+          <span class="btn-text">Buat Akun Sekarang →</span>
+        </button>
+      </form>
+
+      <!-- Footer: Login -->
+      <div class="auth-footer">
+        Sudah punya akun?
+        <a href="index.html">Masuk di sini</a>
+      </div>
+    </div>
+    <!-- end auth-panel -->
+
+  </div>
+
+  <!-- Success Toast -->
+  <div class="toast-success" id="toast-success">
+    <span class="toast-success__icon">🎉</span>
+    <span class="toast-text"></span>
+  </div>
+
+  <script src="../shared/mockData.js"></script>
+  <script src="../shared/auth.js"></script>
+  <script src="login.js"></script>
+
+</body>
+</html>
