@@ -1,0 +1,48 @@
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Edit List') }}: {{ $list->name }}
+        </h2>
+    </x-slot>
+
+    <div class="py-12">
+        <div class="max-w-2xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6">
+                    <form method="POST" action="{{ route('lists.update', $list) }}">
+                        @csrf
+                        @method('PUT')
+
+                        <!-- Name -->
+                        <div>
+                            <x-input-label for="name" :value="__('List Name')" />
+                            <x-text-input id="name" name="name" type="text" class="mt-1 block w-full"
+                                          :value="old('name', $list->name)" required autofocus />
+                            <x-input-error :messages="$errors->get('name')" class="mt-2" />
+                        </div>
+
+                        <!-- Description -->
+                        <div class="mt-4">
+                            <x-input-label for="description" :value="__('Description (optional)')" />
+                            <textarea id="description" name="description" rows="3"
+                                      class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                                      placeholder="{{ __('A brief description of this list...') }}">{{ old('description', $list->description) }}</textarea>
+                            <x-input-error :messages="$errors->get('description')" class="mt-2" />
+                        </div>
+
+                        <div class="mt-6 flex items-center gap-4">
+                            <x-primary-button>
+                                {{ __('Save Changes') }}
+                            </x-primary-button>
+
+                            <a href="{{ route('lists.index') }}"
+                               class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                                {{ __('Cancel') }}
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</x-app-layout>
